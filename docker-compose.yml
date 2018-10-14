@@ -1,0 +1,185 @@
+version: '3'
+
+services:
+  ### Application server ########################
+  nginx:
+    build:
+      context: docker/nginx
+      dockerfile: Dockerfile
+    volumes:
+     - ./:/var/www
+    # Storing logs
+     - ./docker/nginx/logs:/var/log/nginx
+    ports:
+     - 8080:80
+    links:
+     - php-fpm
+
+  ### PHP FastCGI Process Manager ###############
+  php-fpm:
+    build:
+      context: docker/php-fpm
+      dockerfile: Dockerfile
+    volumes:
+     - ./:/var/www
+    environment:
+     # Database
+     - DB_CONNECTION=mysql
+     - DB_HOST=mysql
+     - DB_DATABASE=app
+     - DB_USERNAME=app
+     - DB_PASSWORD=app
+     - DB_PORT=3306
+
+     # Redis
+     - REDIS_HOST=redis
+     - REDIS_PORT=6379
+     - BROADCAST_DRIVER=redis
+     - CACHE_DRIVER=redis
+     - SESSION_DRIVER=redis
+     - QUEUE_DRIVER=redis
+
+     # Mailer
+     - MAIL_DRIVER=SMTP
+     - MAIL_HOST=mailhog
+     - MAIL_PORT=1025
+    links:
+     - mysql
+     - redis
+     - mailhog
+
+  ### PHP-CLI ##################################
+  php-cli:
+    build:
+      context: docker/php-cli
+      dockerfile: Dockerfile
+    volumes:
+    - ./:/var/www
+    environment:
+    # Database
+    - DB_CONNECTION=mysql
+    - DB_HOST=mysql
+    - DB_DATABASE=app
+    - DB_USERNAME=app
+    - DB_PASSWORD=app
+    - DB_PORT=3306
+
+    # Redis
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+    - BROADCAST_DRIVER=redis
+    - CACHE_DRIVER=redis
+    - SESSION_DRIVER=redis
+    - QUEUE_DRIVER=redis
+
+    # Mailer
+    - MAIL_DRIVER=SMTP
+    - MAIL_HOST=mailhog
+    - MAIL_PORT=1025
+    links:
+    - mysql
+    - mysql-testing
+    - redis
+    - mailhog
+    # Do not down CLI after run
+    tty: true
+
+  ### MySQL Database ##########################
+  mysql:
+    build:
+      context: docker/mysql
+      dockerfile: Dockerfile
+    volumes:
+     - mysql:/var/lib/mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=secret
+     - MYSQL_USER=app
+     - MYSQL_PASSWORD=app
+     - MYSQL_DATABASE=app
+    ports:
+     - 33061:3306
+
+  ### MySQL for testing ########################
+  mysql-testing:
+    build:
+      context: docker/mysql
+      dockerfile: Dockerfile
+    environment:
+    - MYSQL_ROOT_PASSWORD=secret
+    - MYSQL_USER=app
+    - MYSQL_PASSWORD=app
+    - MYSQL_DATABASE=app
+
+  ### Redis ##############################
+  redis:
+    build:
+      context: docker/redis
+      dockerfile: Dockerfile
+    volumes:
+      - redis:/data
+    ports:
+      - 63791:6379
+
+  ### Node ###############################
+  node:
+    build:
+      context: docker/node
+      dockerfile: Dockerfile
+    volumes:
+    - ./:/var/www
+    # Do not down CLI after run
+    tty: true
+
+  ### Supervisor ###################
+  supervisor:
+    build:
+      context: docker/supervisor
+      dockerfile: Dockerfile
+    volumes:
+     - ./:/var/www
+    # Supervisor logs
+     - ./docker/supervisor/logs:/home/logs
+    # Supervisor configurations
+     - ./docker/supervisor/conf.d:/etc/supervisor/conf.d
+    environment:
+    # Database
+    - DB_CONNECTION=mysql
+    - DB_HOST=mysql
+    - DB_DATABASE=app
+    - DB_USERNAME=app
+    - DB_PASSWORD=app
+    - DB_PORT=3306
+
+    # Redis
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+    - BROADCAST_DRIVER=redis
+    - CACHE_DRIVER=redis
+    - SESSION_DRIVER=redis
+    - QUEUE_DRIVER=redis
+
+    # Mailer
+    - MAIL_DRIVER=SMTP
+    - MAIL_HOST=mailhog
+    - MAIL_PORT=1025
+    links:
+     - mysql
+     - redis
+     - mailhog
+
+  ### Mailhog (For mail testing) ####
+  mailhog:
+    build:
+      context: docker/mailhog
+      dockerfile: Dockerfile
+    ports:
+     # SMTP server
+     - 1026:1025
+     # Inbox web page
+     - 8026:8025
+
+volumes:
+  mysql:
+    driver: local
+  redis:
+    driver: local
