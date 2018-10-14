@@ -24,9 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // TODO: find another approach
-        if (App::environment() === 'testing') {
-            putenv('DB_HOST=mysql-testing');
-        }
+        //
     }
 }

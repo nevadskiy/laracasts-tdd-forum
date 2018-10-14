@@ -22,27 +22,6 @@ services:
       dockerfile: Dockerfile
     volumes:
      - ./:/var/www
-    environment:
-     # Database
-     - DB_CONNECTION=mysql
-     - DB_HOST=mysql
-     - DB_DATABASE=app
-     - DB_USERNAME=app
-     - DB_PASSWORD=app
-     - DB_PORT=3306
-
-     # Redis
-     - REDIS_HOST=redis
-     - REDIS_PORT=6379
-     - BROADCAST_DRIVER=redis
-     - CACHE_DRIVER=redis
-     - SESSION_DRIVER=redis
-     - QUEUE_DRIVER=redis
-
-     # Mailer
-     - MAIL_DRIVER=SMTP
-     - MAIL_HOST=mailhog
-     - MAIL_PORT=1025
     links:
      - mysql
      - redis
@@ -55,27 +34,6 @@ services:
       dockerfile: Dockerfile
     volumes:
     - ./:/var/www
-    environment:
-    # Database
-    - DB_CONNECTION=mysql
-    - DB_HOST=mysql
-    - DB_DATABASE=app
-    - DB_USERNAME=app
-    - DB_PASSWORD=app
-    - DB_PORT=3306
-
-    # Redis
-    - REDIS_HOST=redis
-    - REDIS_PORT=6379
-    - BROADCAST_DRIVER=redis
-    - CACHE_DRIVER=redis
-    - SESSION_DRIVER=redis
-    - QUEUE_DRIVER=redis
-
-    # Mailer
-    - MAIL_DRIVER=SMTP
-    - MAIL_HOST=mailhog
-    - MAIL_PORT=1025
     links:
     - mysql
     - mysql-testing
@@ -141,27 +99,6 @@ services:
      - ./docker/supervisor/logs:/home/logs
     # Supervisor configurations
      - ./docker/supervisor/conf.d:/etc/supervisor/conf.d
-    environment:
-    # Database
-    - DB_CONNECTION=mysql
-    - DB_HOST=mysql
-    - DB_DATABASE=app
-    - DB_USERNAME=app
-    - DB_PASSWORD=app
-    - DB_PORT=3306
-
-    # Redis
-    - REDIS_HOST=redis
-    - REDIS_PORT=6379
-    - BROADCAST_DRIVER=redis
-    - CACHE_DRIVER=redis
-    - SESSION_DRIVER=redis
-    - QUEUE_DRIVER=redis
-
-    # Mailer
-    - MAIL_DRIVER=SMTP
-    - MAIL_HOST=mailhog
-    - MAIL_PORT=1025
     links:
      - mysql
      - redis
