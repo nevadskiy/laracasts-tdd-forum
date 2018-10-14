@@ -30,6 +30,9 @@ tinker:
 test:
 	@docker-compose exec php-cli vendor/bin/phpunit
 
+autoload:
+	docker-compose exec php-cli composer dump-autoload
+
 refresh:
 	docker-compose exec php-cli php artisan migrate:refresh
 

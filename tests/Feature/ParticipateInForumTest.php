@@ -18,20 +18,20 @@ class ParticipateInForumTest extends TestCase
     {
         $this->expectException(AuthenticationException::class);
 
-        $thread = factory(Thread::class)->create();
+        $thread = create(Thread::class);
 
-        $reply = factory(Reply::class)->make();
+        $reply = make(Reply::class);
         $this->post('/threads/'.$thread->id.'/replies', $reply->toArray());
     }
 
     /** @test */
     function an_authenticated_user_can_participate_in_forum_threads()
     {
-        $this->be($user = factory(User::class)->create());
+        $this->be($user = create(User::class));
 
-        $thread = factory(Thread::class)->create();
+        $thread = create(Thread::class);
 
-        $reply = factory(Reply::class)->make();
+        $reply = make(Reply::class);
         $this->post('/threads/'.$thread->id.'/replies', $reply->toArray());
 
         $response = $this->get('/threads/' . $thread->id);
