@@ -21,7 +21,7 @@ class ParticipateInForumTest extends TestCase
         $thread = create(Thread::class);
 
         $reply = make(Reply::class);
-        $this->post('/threads/'.$thread->id.'/replies', $reply->toArray());
+        $this->post($thread->path() . '/replies', $reply->toArray());
     }
 
     /** @test */
@@ -32,9 +32,9 @@ class ParticipateInForumTest extends TestCase
         $thread = create(Thread::class);
 
         $reply = make(Reply::class);
-        $this->post('/threads/'.$thread->id.'/replies', $reply->toArray());
+        $this->post($thread->path() . '/replies', $reply->toArray());
 
-        $response = $this->get('/threads/' . $thread->id);
+        $response = $this->get($thread->path());
 
         $response->assertSee($reply->body);
     }

@@ -18,12 +18,22 @@ class CreateThreadsTest extends TestCase
         $this->signIn();
 
         $thread = make(Thread::class);
-        $this->post('/threads', $thread->toArray());
 
-        $response = $this->get('/threads/' . $thread->id);
+        $response = $this->post('/threads', $thread->toArray());
+
+        // Request to redirected url
+        $response = $this->get($response->headers->get('Location'));
 
         $response->assertSee($thread->title);
         $response->assertSee($thread->body);
+    }
+
+    /** @test */
+    function guest_cannot_see_the_create_thread_page()
+    {
+        $this->expectException(AuthenticationException::class);
+
+        $this->get('/threads/create');
     }
 
     /** @test */

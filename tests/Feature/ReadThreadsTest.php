@@ -33,7 +33,7 @@ class ReadThreadsTest extends TestCase
     /** @test */
     function a_user_can_read_specific_thread()
     {
-        $response = $this->get('/threads/' . $this->thread->id);
+        $response = $this->get($this->thread->path());
 
         $response->assertStatus(200);
         $response->assertSee($this->thread->title);
@@ -44,7 +44,7 @@ class ReadThreadsTest extends TestCase
     {
         $reply = create(Reply::class, ['thread_id' => $this->thread->id]);
 
-        $response = $this->get('/threads/' . $this->thread->id);
+        $response = $this->get($this->thread->path());
 
         $response->assertSee($reply->body);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Channel;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class ThreadsController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth')->only('store');
+        $this->middleware('auth')->except(['index', 'show']);
     }
 
 
@@ -35,7 +36,7 @@ class ThreadsController extends Controller
      */
     public function create()
     {
-        //
+        return view('threads.create');
     }
 
     /**
@@ -49,19 +50,21 @@ class ThreadsController extends Controller
         $thread = Thread::create([
             'user_id' => auth()->id(),
             'title' => $request['title'],
+            'channel_id' => $request['channel_id'],
             'body' => $request['body'],
         ]);
 
-        return redirect()->route('threads.show', $thread);
+        return redirect($thread->path());
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Thread  $thread
+     * @param Channel $channel
+     * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
      */
-    public function show(Thread $thread)
+    public function show(Channel $channel, Thread $thread)
     {
         return view('threads.show', compact('thread'));
     }
