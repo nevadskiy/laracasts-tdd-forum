@@ -36,6 +36,17 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('threads.index') }}">All threads</a>
                         </li>
+                        <li class="nav-item">
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Channels</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ route('threads.index') }}">All threads</a>
+                                    @foreach (App\Channel::all() as $channel)
+                                        <a class="dropdown-item" href="{{ route('threads.index', $channel) }}">{{ $channel->name }}</a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->
