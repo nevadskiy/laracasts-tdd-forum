@@ -34,14 +34,28 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('threads.index') }}">All threads</a>
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Browse</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ route('threads.index') }}">All threads</a>
+
+                                    @auth
+                                        <a class="dropdown-item" href="{{ route('threads.index') }}?by={{ auth()->user()->name }}">My threads</a>
+                                    @endauth
+                                </div>
+                            </div>
                         </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('threads.create') }}">New thread</a>
+                        </li>
+
                         <li class="nav-item">
                             <div class="dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">Channels</a>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="{{ route('threads.index') }}">All threads</a>
-                                    @foreach (App\Channel::all() as $channel)
+                                    @foreach ($channels as $channel)
                                         <a class="dropdown-item" href="{{ route('threads.index', $channel) }}">{{ $channel->name }}</a>
                                     @endforeach
                                 </div>

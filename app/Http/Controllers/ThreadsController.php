@@ -23,13 +23,9 @@ class ThreadsController extends Controller
      * @param Channel|null $channel
      * @return \Illuminate\Http\Response
      */
-    public function index(Channel $channel = null)
+    public function index(Request $request, Channel $channel = null)
     {
-        if ($channel) {
-            $threads = $channel->threads()->latest()->get();
-        } else {
-            $threads = Thread::latest()->get();
-        }
+        $threads = $this->getThreads($request, $channel);
 
         return view('threads.index', compact('threads'));
     }
@@ -56,7 +52,7 @@ class ThreadsController extends Controller
         $this->validate($request, [
             'title' => 'required',
             'body' => 'required',
-            'channel_id' => 'required|exists:channels,id',
+            'channel_id' => 'required|numeric|exists:channels,id',
         ]);
 
         $thread = Thread::create([
@@ -113,5 +109,29 @@ class ThreadsController extends Controller
     public function destroy(Thread $thread)
     {
         //
+    }
+
+    /**
+     * @param Request $request
+     * @param Channel $channel
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    protected function getThreads(Request $request, ?Channel $channel)
+    {
+        if ($channel) {
+            $threads = $channel->threads()->latest();
+        } else {
+            $threads = Thread::latest();
+        }
+
+        if ($request->has('by')) {
+            $threads->whereHas('creator', function ($query) use ($request) {
+                $query->where('name', $request['by']);
+            });
+        }
+
+        $threads = $threads->get();
+
+        return $threads;
     }
 }
