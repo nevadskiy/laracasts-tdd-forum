@@ -17,17 +17,21 @@ class ThreadsController extends Controller
         $this->middleware('auth')->except(['index', 'show']);
     }
 
-
     /**
      * Display a listing of the resource.
      *
-     * @param Channel|null $channel
+     * @param Request $request
      * @param ThreadFilters $filters
+     * @param Channel|null $channel
      * @return \Illuminate\Http\Response
      */
-    public function index(ThreadFilters $filters, Channel $channel = null)
+    public function index(Request $request, ThreadFilters $filters, Channel $channel = null)
     {
         $threads = $this->getThreads($filters, $channel);
+
+        if ($request->expectsJson()) {
+            return $threads;
+        }
 
         return view('threads.index', compact('threads'));
     }
@@ -76,7 +80,9 @@ class ThreadsController extends Controller
      */
     public function show(Channel $channel, Thread $thread)
     {
-        return view('threads.show', compact('thread'));
+        $replies = $thread->replies()->paginate(20);
+
+        return view('threads.show', compact('thread', 'replies'));
     }
 
     /**
@@ -120,7 +126,7 @@ class ThreadsController extends Controller
      */
     protected function getThreads(ThreadFilters $filters, ?Channel $channel)
     {
-        $threads = Thread::latest()->filter($filters);
+        $threads = Thread::latest()->filter($filters)->withCount('replies');
 
         if ($channel) {
             $threads->where('channel_id', $channel->id);

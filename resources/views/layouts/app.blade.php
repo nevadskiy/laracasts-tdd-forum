@@ -42,6 +42,8 @@
                                     @auth
                                         <a class="dropdown-item" href="{{ route('threads.index') }}?by={{ auth()->user()->name }}">My threads</a>
                                     @endauth
+
+                                    <a class="dropdown-item" href="{{ route('threads.index') }}?popular=1">Popular</a>
                                 </div>
                             </div>
                         </li>
