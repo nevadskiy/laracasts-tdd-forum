@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Filters\ThreadFilters;
 use App\Thread;
 use Illuminate\Http\Request;
 
@@ -21,11 +22,12 @@ class ThreadsController extends Controller
      * Display a listing of the resource.
      *
      * @param Channel|null $channel
+     * @param ThreadFilters $filters
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Channel $channel = null)
+    public function index(ThreadFilters $filters, Channel $channel = null)
     {
-        $threads = $this->getThreads($request, $channel);
+        $threads = $this->getThreads($filters, $channel);
 
         return view('threads.index', compact('threads'));
     }
@@ -112,26 +114,18 @@ class ThreadsController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param ThreadFilters $filters
      * @param Channel $channel
-     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Relations\HasMany
+     * @return mixed
      */
-    protected function getThreads(Request $request, ?Channel $channel)
+    protected function getThreads(ThreadFilters $filters, ?Channel $channel)
     {
+        $threads = Thread::latest()->filter($filters);
+
         if ($channel) {
-            $threads = $channel->threads()->latest();
-        } else {
-            $threads = Thread::latest();
+            $threads->where('channel_id', $channel->id);
         }
 
-        if ($request->has('by')) {
-            $threads->whereHas('creator', function ($query) use ($request) {
-                $query->where('name', $request['by']);
-            });
-        }
-
-        $threads = $threads->get();
-
-        return $threads;
+        return $threads->get();
     }
 }
