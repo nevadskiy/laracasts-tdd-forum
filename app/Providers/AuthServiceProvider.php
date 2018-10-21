@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Policies\ThreadPolicy;
 use App\Thread;
+use App\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -27,6 +28,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::before(function (User $user) {
+            if ($user->name === 'admin') {
+                return true;
+            }
+        });
     }
 }
