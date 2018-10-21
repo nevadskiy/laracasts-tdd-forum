@@ -17,6 +17,27 @@ class Thread extends Model
     ];
 
     /**
+     * Boot model
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Allow to use like this: $thread->withoutGlobalScope('creator')
+        static::addGlobalScope('creator', function ($builder) {
+            $builder->with('creator');
+        });
+
+        static::addGlobalScope('channel', function ($builder) {
+            $builder->with('channel');
+        });
+
+        static::addGlobalScope('repliesCount', function ($builder) {
+            $builder->withCount('replies');
+        });
+    }
+
+    /**
      * @return string
      */
     public function path()
@@ -29,9 +50,7 @@ class Thread extends Model
      */
     public function replies()
     {
-        return $this->hasMany(Reply::class)
-            ->with('owner')
-            ->withCount('favorites');
+        return $this->hasMany(Reply::class);
     }
 
     /**
