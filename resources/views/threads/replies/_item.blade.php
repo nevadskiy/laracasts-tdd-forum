@@ -2,7 +2,7 @@
     <div class="card-header">
         <div class="d-flex align-items-center">
             <span>
-                <a href="#">{{ $reply->owner->name }}</a>
+                <a href="{{ route('profiles.show', $reply->owner) }}">{{ $reply->owner->name }}</a>
                 <span class="">said {{ $reply->created_at->diffForHumans() }}</span>
             </span>
 
