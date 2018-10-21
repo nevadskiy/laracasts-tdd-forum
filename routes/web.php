@@ -26,6 +26,7 @@ Route::group([
     Route::post('/', 'ThreadsController@store')->name('store');
     Route::get('create', 'ThreadsController@create')->name('create');
     Route::get('{channel}/{thread}', 'ThreadsController@show')->name('show');
+    Route::delete('{channel}/{thread}', 'ThreadsController@destroy')->name('destroy');
     Route::get('{channel?}', 'ThreadsController@index')->name('index');
 });
 

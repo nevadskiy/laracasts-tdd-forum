@@ -2,31 +2,20 @@
 
 @section('content')
     <div class="container">
-        <div class="row">
-            <div class="col-12">
+        <div class="row justify-content-center">
+            <div class="col-8">
                 <div class="card mb-3">
                     <div class="card-header">
-                        <h1 class="d-flex align-items-center justify-content-between">
+                        <h1 class="d-flex align-items-center justify-content-between mb-0">
                             <span>{{ $user->name }}</span>
                             <small>Since {{ $user->created_at->diffForHumans() }}</small>
                         </h1>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
+            <div class="col-8">
                 @foreach ($threads as $thread)
-                    <article class="mb-4">
-                        <div class="d-flex flex-row align-items-center justify-content-between">
-                            <h4 class="d-flex flex-column">
-                                <a href="{{ $thread->path() }}" class="mb-1">{{ $thread->title }}</a>
-                                <small>{{ $thread->created_at->diffForHumans() }}</small>
-                            </h4>
-                            <strong><a href="{{ $thread->path() }}">{{ $thread->replies_count }} {{ str_plural('comment', $thread->replies_count) }}</a></strong>
-                        </div>
-                        <div class="body">{{ $thread->body }}</div>
-                    </article>
+                    @include('threads._item')
                 @endforeach
 
                 {{ $threads->links() }}

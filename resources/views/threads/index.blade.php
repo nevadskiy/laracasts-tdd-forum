@@ -4,15 +4,17 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Forum threads</div>
-                    <div class="card-body">
-                        @foreach ($threads as $thread)
-                            @include('threads._item')
-                            <hr>
-                        @endforeach
-                    </div>
-                </div>
+                <h2 class="px-4 mb-3">Forum threads</h2>
+
+                @forelse($threads as $thread)
+                    @include('threads._item')
+                    <hr>
+                @empty
+                   <div class="text-center">
+                       <p>There are no relevant results at this time.</p>
+                   </div>
+                @endforelse
+                {{ $threads->links() }}
             </div>
         </div>
     </div>

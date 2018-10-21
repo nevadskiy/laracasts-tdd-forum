@@ -6,7 +6,19 @@
             <div class="col-md-8">
                 <div class="card mb-3">
                     <div class="card-header">
-                        <a href="{{ route('profiles.show', $thread->creator) }}">{{ $thread->creator->name }}</a> posted: {{ $thread->title }}
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span>
+                                <a href="{{ route('profiles.show', $thread->creator) }}">{{ $thread->creator->name }}</a> posted: {{ $thread->title }}
+                            </span>
+
+                            @can('delete', $thread)
+                                <form action="{{ $thread->path() }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            @endcan
+                        </div>
                     </div>
                     <div class="card-body">
                         {{ $thread->body }}
