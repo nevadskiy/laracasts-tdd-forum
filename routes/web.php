@@ -30,3 +30,5 @@ Route::group([
 });
 
 Route::post('threads/{channel}/{thread}/replies', 'RepliesController@store')->name('replies.store');
+
+Route::post('replies/{reply}/favorites', 'FavoritesController@store')->name('replies.favorite');
