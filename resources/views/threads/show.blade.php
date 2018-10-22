@@ -7,9 +7,7 @@
                 <div class="card mb-3">
                     <div class="card-header">
                         <div class="d-flex align-items-center justify-content-between">
-                            <span>
-                                <a href="{{ route('profiles.show', $thread->creator) }}">{{ $thread->creator->name }}</a> posted: {{ $thread->title }}
-                            </span>
+                            <h4 class="mb-0">{{ $thread->title }}</h4>
 
                             @can('delete', $thread)
                                 <form action="{{ $thread->path() }}" method="POST">

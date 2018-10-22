@@ -14,11 +14,14 @@
                 </div>
             </div>
             <div class="col-8">
-                @foreach ($threads as $thread)
-                    @include('threads._item')
+                @foreach ($activities as $date => $activity)
+                    <h3 class="px-2">{{ $date }}</h3>
+                    @foreach ($activity as $record)
+                        @include("profiles.activities.{$record->type}", ['activity' => $record])
+                    @endforeach
                 @endforeach
 
-                {{ $threads->links() }}
+                {{--{{ $threads->links() }}--}}
             </div>
         </div>
     </div>

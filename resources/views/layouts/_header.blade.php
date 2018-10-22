@@ -37,7 +37,7 @@
                     </div>
                 </li>
 
-                <li class="nav-item d-flex align-items-center">
+                <li class="nav-item d-flex px-2 align-items-center">
                     <a class="btn btn-primary btn-sm" href="{{ route('threads.create') }}">New thread</a>
                 </li>
             </ul>
