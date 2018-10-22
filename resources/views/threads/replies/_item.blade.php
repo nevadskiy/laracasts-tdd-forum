@@ -1,4 +1,4 @@
-<div class="card mb-3">
+<div id="reply-{{ $reply->id }}" class="card mb-3">
     <div class="card-header">
         <div class="d-flex align-items-center">
             <span>
@@ -17,4 +17,13 @@
     <div class="card-body">
         {{ $reply->body }}
     </div>
+    @can('delete', $reply)
+        <div class="card-footer">
+            <form action="{{ route('replies.destroy', $reply) }}" method="POST" class="d-flex">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger btn-sm ml-auto">Delete</button>
+            </form>
+        </div>
+    @endcan
 </div>

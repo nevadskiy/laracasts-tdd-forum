@@ -1,5 +1,5 @@
 ALIASES:
-alias pf='docker-compose exec php-cli vendor/bin/phpunit --filter'
+alias tf='docker-compose exec php-cli vendor/bin/phpunit --filter'
 alias art='docker-compose exec php-cli php artisan'
 
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>

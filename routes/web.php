@@ -30,8 +30,12 @@ Route::group([
     Route::get('{channel?}', 'ThreadsController@index')->name('index');
 });
 
-Route::post('threads/{channel}/{thread}/replies', 'RepliesController@store')->name('replies.store');
-
-Route::post('replies/{reply}/favorites', 'FavoritesController@store')->name('replies.favorite');
+Route::group([
+    'as' => 'replies.'
+], function () {
+    Route::post('threads/{channel}/{thread}/replies', 'RepliesController@store')->name('store');
+    Route::delete('replies/{reply}', 'RepliesController@destroy')->name('destroy');
+    Route::post('replies/{reply}/favorites', 'FavoritesController@store')->name('favorite');
+});
 
 Route::get('/profiles/{user}', 'ProfilesController@show')->name('profiles.show');
