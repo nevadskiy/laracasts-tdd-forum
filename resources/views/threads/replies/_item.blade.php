@@ -28,13 +28,8 @@
         </div>
         @can('delete', $reply)
             <div class="card-footer d-flex">
-                <button class="btn btn-sm mr-2" @click="editing = true">Edit</button>
-
-                <form action="{{ route('replies.destroy', $reply) }}" method="POST" class="d-flex">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm ml-auto">Delete</button>
-                </form>
+                <button class="btn btn-sm btn-primary mr-2" @click="editing = true">Edit</button>
+                <button class="btn btn-sm btn-danger mr-2" @click="destroy">Delete</button>
             </div>
         @endcan
     </div>
