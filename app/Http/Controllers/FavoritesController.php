@@ -16,7 +16,10 @@ class FavoritesController extends Controller
     public function store(Reply $reply)
     {
         $reply->addFavorite();
+    }
 
-        return back();
+    public function destroy(Reply $reply)
+    {
+        $reply->removeFavorite();
     }
 }

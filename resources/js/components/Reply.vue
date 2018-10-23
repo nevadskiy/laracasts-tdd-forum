@@ -1,5 +1,11 @@
 <script>
+  import Favorite from './Favorite.vue';
+
   export default {
+    components: {
+      'favorite': Favorite,
+    },
+
     props: {
       attributes: {
         type: Object,
@@ -11,7 +17,7 @@
       return {
         editing: false,
         body: this.attributes.body,
-      }
+      };
     },
 
     methods: {
@@ -33,5 +39,5 @@
         flash('Your reply has been deleted');
       }
     }
-  }
+  };
 </script>

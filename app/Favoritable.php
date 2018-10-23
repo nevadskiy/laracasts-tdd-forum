@@ -4,49 +4,37 @@ namespace App;
 
 trait Favoritable
 {
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
-     */
     public function favorites()
     {
         return $this->morphMany(Favorite::class, 'favorited');
     }
 
-    /**
-     * @param User|null $user
-     */
-    public function addFavorite(User $user = null)
+    public function addFavorite()
     {
-        if ($this->isFavorited($user)) {
+        if ($this->isFavorited()) {
             return;
         }
 
-        $this->favorites()->create(['user_id' => $this->getUserId($user)]);
+        $this->favorites()->create(['user_id' => auth()->id()]);
     }
 
-    /**
-     * @param User|null $user
-     * @return bool
-     */
-    public function isFavorited(User $user = null)
+    public function removeFavorite()
     {
-        return !! $this->favorites->where(['user_id' => $this->getUserId($user)])->count();
+        $this->favorites()->where('user_id', auth()->id())->delete();
     }
 
-    /**
-     * @return mixed
-     */
+    public function isFavorited()
+    {
+        return !! $this->favorites->where('user_id', auth()->id())->count();
+    }
+
+    public function getIsFavoritedAttribute()
+    {
+        return $this->isFavorited();
+    }
+
     public function getFavoritesCountAttribute()
     {
         return $this->favorites->count();
-    }
-
-    /**
-     * @param User $user
-     * @return int|mixed|null
-     */
-    protected function getUserId(?User $user)
-    {
-        return $user ? $user->id : auth()->id();
     }
 }

@@ -19,7 +19,7 @@
       return {
         body: '',
         isShow: false,
-      }
+      };
     },
 
     created() {
@@ -44,7 +44,7 @@
         }, 3000);
       }
     }
-  }
+  };
 </script>
 
 <style>

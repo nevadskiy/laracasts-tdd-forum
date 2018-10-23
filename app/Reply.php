@@ -18,7 +18,16 @@ class Reply extends Model
     /**
      * @var array
      */
-    protected $with = ['owner', 'favorites'];
+    protected $with = [
+        'owner', 'favorites'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $appends = [
+        'favoritesCount', 'isFavorited'
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
