@@ -48006,15 +48006,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   data: function data() {
     return {
-      favoritesCount: this.reply.favoritesCount,
-      isFavorited: this.reply.isFavorited
+      count: this.reply.favoritesCount,
+      active: this.reply.isFavorited
     };
   },
 
 
   computed: {
     buttonClasses: function buttonClasses() {
-      return ['btn', 'btn-sm', this.isFavorited ? ['btn-primary', 'text-white'] : ['btn-default', 'text-primary']];
+      return ['btn', 'btn-sm', this.active ? ['btn-primary', 'text-white'] : ['btn-default', 'text-primary']];
     },
     endpoint: function endpoint() {
       return '/replies/' + this.reply.id + '/favorites';
@@ -48023,19 +48023,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     toggle: function toggle() {
-      return this.isFavorited ? this.remove() : this.add();
+      return this.active ? this.remove() : this.add();
     },
     add: function add() {
       axios.post(this.endpoint);
 
-      this.isFavorited = true;
-      this.favoritesCount++;
+      this.active = true;
+      this.count++;
     },
     remove: function remove() {
       axios.delete(this.endpoint);
 
-      this.isFavorited = false;
-      this.favoritesCount--;
+      this.active = false;
+      this.count--;
     }
   }
 });
@@ -48058,7 +48058,7 @@ var render = function() {
     [
       _c("span", { staticClass: "fab fa-gratipay" }),
       _vm._v(" "),
-      _c("span", [_vm._v(_vm._s(_vm.favoritesCount))])
+      _c("span", [_vm._v(_vm._s(_vm.count))])
     ]
   )
 }

@@ -1,7 +1,7 @@
 <template>
     <button type="submit" @click="toggle" :class="buttonClasses">
         <span class="fab fa-gratipay"></span>
-        <span>{{ favoritesCount }}</span>
+        <span>{{ count }}</span>
     </button>
 </template>
 
@@ -16,14 +16,14 @@
 
     data() {
       return {
-        favoritesCount: this.reply.favoritesCount,
-        isFavorited: this.reply.isFavorited,
+        count: this.reply.favoritesCount,
+        active: this.reply.isFavorited,
       };
     },
 
     computed: {
       buttonClasses() {
-        return ['btn', 'btn-sm', this.isFavorited ? ['btn-primary', 'text-white'] : ['btn-default', 'text-primary']];
+        return ['btn', 'btn-sm', this.active ? ['btn-primary', 'text-white'] : ['btn-default', 'text-primary']];
       },
 
       endpoint() {
@@ -33,21 +33,21 @@
 
     methods: {
       toggle() {
-        return this.isFavorited ? this.remove() : this.add();
+        return this.active ? this.remove() : this.add();
       },
 
       add() {
         axios.post(this.endpoint);
 
-        this.isFavorited = true;
-        this.favoritesCount++;
+        this.active = true;
+        this.count++;
       },
 
       remove() {
         axios.delete(this.endpoint);
 
-        this.isFavorited = false;
-        this.favoritesCount--;
+        this.active = false;
+        this.count--;
       }
     }
   };
