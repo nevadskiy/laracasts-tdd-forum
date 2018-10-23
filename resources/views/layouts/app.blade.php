@@ -23,6 +23,10 @@
         body {
             background-color: #e2e2e2;
         }
+
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
