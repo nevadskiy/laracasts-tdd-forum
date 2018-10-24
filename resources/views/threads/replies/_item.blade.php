@@ -7,7 +7,9 @@
                     <span class="">said {{ $reply->created_at->diffForHumans() }}</span>
                 </span>
 
-                <favorite :reply="{{ $reply }}"></favorite>
+                @auth
+                    <favorite :reply="{{ $reply }}"></favorite>
+                @endauth
             </div>
         </div>
         <div class="card-body">
