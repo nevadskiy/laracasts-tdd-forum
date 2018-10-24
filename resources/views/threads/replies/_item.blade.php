@@ -12,6 +12,7 @@
                 @endauth
             </div>
         </div>
+
         <div class="card-body">
             <div v-if="editing">
                 <div class="form-group">
@@ -23,6 +24,7 @@
             </div>
             <div v-else v-text="body"></div>
         </div>
+
         @can('delete', $reply)
             <div class="card-footer d-flex">
                 <button class="btn btn-sm btn-primary mr-2" @click="editing = true">Edit</button>

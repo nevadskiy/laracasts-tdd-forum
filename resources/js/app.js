@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -8,6 +7,14 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+
+window.Vue.prototype.authorize = function (handler) {
+  // Additional admin privileges.
+
+  let user = window.app.user;
+
+  return user ? handler(window.app.user) : false;
+};
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -22,8 +29,9 @@ window.flash = (message) => {
 window.events = new Vue();
 
 Vue.component('flash', require('./components/Flash.vue'));
-Vue.component('reply', require('./components/Reply.vue'));
+
+Vue.component('thread-view', require('./pages/Thread.vue'));
 
 const app = new Vue({
-    el: '#app'
+  el: '#app'
 });

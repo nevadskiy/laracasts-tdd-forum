@@ -19,6 +19,13 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    <script>
+      window.app = {!! json_encode([
+        'signedIn' => auth()->check(),
+        'user' => auth()->user(),
+      ]) !!}
+    </script>
+
     <style>
         body {
             background-color: #e2e2e2;
@@ -30,14 +37,14 @@
     </style>
 </head>
 <body>
-    <div id="app">
-        @include('layouts._header')
+<div id="app">
+    @include('layouts._header')
 
-        <main class="py-4">
-            @yield('content')
-        </main>
+    <main class="py-4">
+        @yield('content')
+    </main>
 
-        <flash message="{{ session('flash') }}"></flash>
-    </div>
+    <flash message="{{ session('flash') }}"></flash>
+</div>
 </body>
 </html>
