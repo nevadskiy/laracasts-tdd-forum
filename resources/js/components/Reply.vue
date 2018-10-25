@@ -4,7 +4,7 @@
             <div class="d-flex align-items-center justify-content-between">
                 <span>
                     <a :href="'/profiles/' + data.owner.name">{{ data.owner.name }}</a>
-                    <span class="">said {{ data.created_at }}</span>
+                    <span class="">said {{ ago }}</span>
                 </span>
 
                 <favorite v-if="signedIn" :reply="data"></favorite>
@@ -31,6 +31,7 @@
 
 <script>
   import Favorite from './Favorite.vue';
+  import moment from 'moment';
 
   export default {
     components: {
@@ -59,6 +60,10 @@
 
       canUpdate() {
         return this.authorize(user => this.data.user_id === user.id);
+      },
+
+      ago() {
+        return moment.utc(this.data.created_at).fromNow();
       }
     },
 

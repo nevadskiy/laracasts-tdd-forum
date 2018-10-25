@@ -9,7 +9,7 @@ class ThreadFilters extends Filters
     /**
      * @var array
      */
-    protected $filters = ['by', 'popular'];
+    protected $filters = ['by', 'popular', 'unanswered'];
 
     /**
      * @param $username
@@ -32,5 +32,16 @@ class ThreadFilters extends Filters
         $this->builder->getQuery()->orders = [];
 
         return $this->builder->orderBy('replies_count', 'desc');
+    }
+
+
+    /**
+     * Filter the query according to most popular threads
+     *
+     * @return mixed
+     */
+    public function unanswered()
+    {
+        return $this->builder->where('replies_count', 0);
     }
 }

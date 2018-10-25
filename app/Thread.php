@@ -34,9 +34,9 @@ class Thread extends Model
             $builder->with('channel');
         });
 
-        static::addGlobalScope('repliesCount', function ($builder) {
-            $builder->withCount('replies');
-        });
+//        static::addGlobalScope('repliesCount', function ($builder) {
+//            $builder->withCount('replies');
+//        });
 
         static::deleting(function (Thread $thread) {
             // Trick with collection EACH method

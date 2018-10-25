@@ -4,14 +4,19 @@
             <reply :data="reply" @deleted="remove(index)"></reply>
         </div>
 
-        <new-reply :endpoint="endpoint" @created="add"></new-reply>
+        <paginator :data-set="dataSet" @changed="fetch"></paginator>
+
+        <new-reply @created="add"></new-reply>
     </div>
 </template>
 <script>
   import Reply from './Reply.vue';
   import NewReply from './NewReply.vue';
+  import collection from '../mixins/collection';
 
   export default {
+    mixins: [collection],
+
     components: {
       'reply': Reply,
       'new-reply': NewReply,
@@ -25,24 +30,34 @@
     },
 
     data() {
-      return {
-        items: this.data,
-        endpoint: location.pathname + '/replies',
-      };
+      return { dataSet: null };
+    },
+
+    created() {
+      this.fetch();
     },
 
     methods: {
-      remove(index) {
-        this.items.splice(index, 1);
-
-        this.$emit('removed');
+      fetch(page) {
+        axios.get(this.url(page)).then(this.refresh);
       },
 
-      add(reply) {
-        this.items.push(reply);
+      url(page) {
+        if (!page) {
+          let query = location.search.match(/page=(\d+)/);
 
-        this.$emit('added');
-      }
+          page = query ? query[1] : 1;
+        }
+
+        return `${location.pathname}/replies?page=${page}`;
+      },
+
+      refresh({data}) {
+        this.dataSet = data;
+        this.items = data.data;
+
+        window.scrollTo(0, 0);
+      },
     }
   };
 </script>

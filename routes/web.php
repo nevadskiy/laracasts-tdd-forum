@@ -33,6 +33,7 @@ Route::group([
 Route::group([
     'as' => 'replies.'
 ], function () {
+    Route::get('threads/{channel}/{thread}/replies', 'RepliesController@index')->name('index');
     Route::post('threads/{channel}/{thread}/replies', 'RepliesController@store')->name('store');
     Route::delete('replies/{reply}', 'RepliesController@destroy')->name('destroy');
     Route::put('replies/{reply}', 'RepliesController@update')->name('update');

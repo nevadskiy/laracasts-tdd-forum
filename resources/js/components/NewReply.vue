@@ -21,16 +21,10 @@
 
 <script>
   export default {
-    props: {
-      endpoint: {
-        type: String,
-        required: true,
-      }
-    },
-
     data() {
       return {
         body: '',
+        endpoint: location.pathname + '/replies',
       }
     },
 
