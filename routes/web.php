@@ -28,6 +28,15 @@ Route::group([
     Route::get('{channel}/{thread}', 'ThreadsController@show')->name('show');
     Route::delete('{channel}/{thread}', 'ThreadsController@destroy')->name('destroy');
     Route::get('{channel?}', 'ThreadsController@index')->name('index');
+
+    Route::group([
+        'prefix' => '{channel}/{thread}/subscriptions',
+        'as' => 'subscriptions.',
+        'middleware' => 'auth'
+    ], function () {
+        Route::post('/', 'ThreadSubscriptionsController@store')->name('store');
+        Route::delete('/', 'ThreadSubscriptionsController@destroy')->name('destroy');
+    });
 });
 
 Route::group([
@@ -43,3 +52,6 @@ Route::group([
 });
 
 Route::get('/profiles/{user}', 'ProfilesController@show')->name('profiles.show');
+
+Route::get('/profiles/{user}/notifications', 'UserNotificationsController@index')->name('notifications.index');
+Route::delete('/profiles/{user}/notifications/{notification}', 'UserNotificationsController@destroy')->name('notifications.destroy');

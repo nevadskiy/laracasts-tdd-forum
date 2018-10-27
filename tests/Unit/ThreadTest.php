@@ -32,9 +32,7 @@ class ThreadTest extends TestCase
     /** @test */
     function it_can_make_a_string_path()
     {
-        $thread = create(Thread::class);
-
-        $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->id, $thread->path());
+        $this->assertEquals('/threads/' . $this->thread->channel->slug . '/' . $this->thread->id, $this->thread->path());
     }
 
     /** @test */
@@ -57,8 +55,45 @@ class ThreadTest extends TestCase
     /** @test */
     function it_belongs_to_a_channel()
     {
-        $thread = create(Thread::class);
+        $this->assertInstanceOf(Channel::class, $this->thread->channel);
+    }
 
-        $this->assertInstanceOf(Channel::class, $thread->channel);
+    /** @test */
+    function it_can_be_used_for_subscriptions()
+    {
+        // Given
+        $this->signIn();
+
+        // When
+        $this->thread->subscribe();
+
+        // Then
+        $this->assertEquals(1, $this->thread->subscriptions()->where('user_id', auth()->id())->count());
+    }
+
+    /** @test */
+    function it_can_be_unsubscribed_from()
+    {
+        // Given
+        $this->signIn();
+
+        // When
+        $this->thread->subscribe();
+        $this->thread->unsubscribe();
+
+        // Then
+        $this->assertCount(0, $this->thread->subscriptions);
+    }
+
+    /** @test */
+    function it_knows_if_the_authenticated_user_is_subscribe_to_it()
+    {
+        $this->signIn();
+
+        $this->assertFalse($this->thread->isSubscribed);
+
+        $this->thread->subscribe();
+
+        $this->assertTrue($this->thread->isSubscribed);
     }
 }

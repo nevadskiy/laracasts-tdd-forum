@@ -30,8 +30,12 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            This thread was published {{ $thread->created_at->diffForHumans() }} by
-                            <a href="#">{{ $thread->creator->name }}</a>, and currently has @{{ repliesCount }} {{ str_plural('comment', $thread->replies->count()) }}
+                            <div>
+                                This thread was published {{ $thread->created_at->diffForHumans() }} by
+                                <a href="#">{{ $thread->creator->name }}</a>, and currently has @{{ repliesCount }} {{ str_plural('comment', $thread->replies->count()) }}
+                            </div>
+
+                            <subscribe :status="{{ var_export($thread->isSubscribed) }}"></subscribe>
                         </div>
                     </div>
                 </div>
