@@ -6,6 +6,7 @@ use Faker\Generator as Faker;
 use Illuminate\Notifications\DatabaseNotification;
 use Ramsey\Uuid\Uuid;
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(DatabaseNotification::class, function (Faker $faker) {
     return [
         'id' => Uuid::uuid4()->toString(),

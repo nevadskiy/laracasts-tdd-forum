@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Notifications\ThreadWasUpdated;
+use App\Events\ThreadHasNewReply;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
@@ -79,13 +79,10 @@ class Thread extends Model
      */
     public function addReply($reply)
     {
+        /** @var Reply $reply */
         $reply = $this->replies()->create($reply);
 
-        $this->subscriptions
-            ->filter(function ($sub) use ($reply) {
-                return $sub->user_id !== $reply->user_id;
-            })
-            ->each->notify($reply);
+        event(new ThreadHasNewReply($this, $reply));
 
         return $reply;
     }
