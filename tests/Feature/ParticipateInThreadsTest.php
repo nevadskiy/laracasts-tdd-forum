@@ -24,7 +24,7 @@ class ParticipateInThreadsTest extends TestCase
     /** @test */
     function an_authenticated_user_can_participate_in_forum_threads()
     {
-        $this->be($user = create(User::class));
+       $this->signIn();
 
         $thread = create(Thread::class);
 
@@ -101,5 +101,23 @@ class ParticipateInThreadsTest extends TestCase
         $this->signIn()
             ->put("/replies/{$reply->id}")
             ->assertStatus(403);
+    }
+
+    /** @test */
+    function replies_that_contain_spam_may_not_be_created()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->signIn();
+
+        $thread = create(Thread::class);
+
+        $reply = make(Reply::class, [
+            'body' => 'Yahoo Customer Support'
+        ]);
+
+        $this->expectException(\Exception::class);
+
+        $this->post($thread->path() . '/replies', $reply->toArray());
     }
 }
