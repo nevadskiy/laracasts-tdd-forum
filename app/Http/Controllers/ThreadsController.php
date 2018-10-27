@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Channel;
 use App\Filters\ThreadFilters;
 use App\Thread;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -78,10 +79,13 @@ class ThreadsController extends Controller
      * @param Channel $channel
      * @param  \App\Thread $thread
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function show(Channel $channel, Thread $thread)
     {
         $thread->append('isSubscribed');
+
+        $this->markAsRead($thread);
 
         return view('threads.show', compact('thread'));
     }
@@ -145,5 +149,15 @@ class ThreadsController extends Controller
         }
 
         return $threads->paginate(20);
+    }
+
+    /**
+     * @param Thread $thread
+     */
+    protected function markAsRead(Thread $thread): void
+    {
+        if (auth()->check()) {
+            auth()->user()->readThread($thread);
+        }
     }
 }

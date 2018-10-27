@@ -6,7 +6,6 @@ use App\Reply;
 use App\Thread;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ThreadWasUpdated extends Notification
 {
