@@ -77,7 +77,7 @@
             flash('Updated!');
           })
           .catch(error => {
-            flash(error.response.data, 'danger');
+            flash(error.response.data.errors.body[0], 'danger');
           });
 
       },

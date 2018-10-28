@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Channel;
 use App\Reply;
-use App\Inspections\Spam;
+use App\Rules\SpamFree;
 use App\Thread;
 use Exception;
 use Illuminate\Http\Request;
@@ -24,16 +24,12 @@ class RepliesController extends Controller
 
     public function store(Request $request, Channel $channel, Thread $thread)
     {
-        try {
-            $this->validateReply($request);
+        $this->validate($request, ['body' => ['required', new SpamFree()]]);
 
-            $reply = $thread->addReply([
-                'body' => $request['body'],
-                'user_id' => auth()->id()
-            ]);
-        } catch (Exception $e) {
-            return response('Sorry, your reply could not be saved at this time.', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $reply = $thread->addReply([
+            'body' => $request['body'],
+            'user_id' => auth()->id()
+        ]);
 
         return $reply->load('owner');
     }
@@ -55,20 +51,10 @@ class RepliesController extends Controller
     {
         $this->authorize('update', $reply);
 
-        try {
-            $this->validateReply($request);
-            $reply->update(['body' => $request['body']]);
-        } catch (Exception $e) {
-            return response('Sorry, your reply could not be saved at this time.', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $this->validate($request, ['body' => ['required', new SpamFree()]]);
+
+        $reply->update(['body' => $request['body']]);
 
         return response()->json(['status' => 'success'], Response::HTTP_OK);
-    }
-
-    protected function validateReply(Request $request): void
-    {
-        $this->validate($request, ['body' => 'required']);
-
-        resolve(Spam::class)->detect($request['body']);
     }
 }
