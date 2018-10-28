@@ -82,7 +82,7 @@ class ParticipateInThreadsTest extends TestCase
 
         $reply = create(Reply::class, ['user_id' => auth()->id()]);
 
-        $this->put("/replies/{$reply->id}", ['body' => $body = 'You been changed, fool.']);
+        $this->put("/replies/{$reply->id}", ['body' => $body = 'Test update']);
 
         $this->assertDatabaseHas('replies', [
             'id' => $reply->id,
@@ -106,8 +106,6 @@ class ParticipateInThreadsTest extends TestCase
     /** @test */
     function replies_that_contain_spam_may_not_be_created()
     {
-        $this->withoutExceptionHandling();
-
         $this->signIn();
 
         $thread = create(Thread::class);
@@ -116,8 +114,7 @@ class ParticipateInThreadsTest extends TestCase
             'body' => 'Yahoo Customer Support'
         ]);
 
-        $this->expectException(\Exception::class);
-
-        $this->post($thread->path() . '/replies', $reply->toArray());
+        $this->post($thread->path() . '/replies', $reply->toArray())
+            ->assertSessionHasErrors('body');
     }
 }
