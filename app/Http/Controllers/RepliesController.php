@@ -6,6 +6,7 @@ use App\Channel;
 use App\Reply;
 use App\Inspections\Spam;
 use App\Thread;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -21,24 +22,20 @@ class RepliesController extends Controller
         return $thread->replies()->paginate(20);
     }
 
-    public function store(Request $request, Channel $channel, Thread $thread, Spam $spam)
+    public function store(Request $request, Channel $channel, Thread $thread)
     {
-        $this->validate($request, [
-            'body' => 'required'
-        ]);
+        try {
+            $this->validateReply($request);
 
-        $spam->detect($request['body']);
-
-        $reply = $thread->addReply([
-            'body' => $request['body'],
-            'user_id' => auth()->id()
-        ]);
-
-        if ($request->expectsJson()) {
-            return $reply->load('owner');
+            $reply = $thread->addReply([
+                'body' => $request['body'],
+                'user_id' => auth()->id()
+            ]);
+        } catch (Exception $e) {
+            return response('Sorry, your reply could not be saved at this time.', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return back()->with('flash', 'Your reply has been left.');
+        return $reply->load('owner');
     }
 
     public function destroy(Request $request, Reply $reply)
@@ -58,12 +55,20 @@ class RepliesController extends Controller
     {
         $this->authorize('update', $reply);
 
-        $reply->update(['body' => $request['body']]);
-
-        if ($request->expectsJson()) {
-            return response()->json(['status' => 'success'], Response::HTTP_OK);
+        try {
+            $this->validateReply($request);
+            $reply->update(['body' => $request['body']]);
+        } catch (Exception $e) {
+            return response('Sorry, your reply could not be saved at this time.', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return back();
+        return response()->json(['status' => 'success'], Response::HTTP_OK);
+    }
+
+    protected function validateReply(Request $request): void
+    {
+        $this->validate($request, ['body' => 'required']);
+
+        resolve(Spam::class)->detect($request['body']);
     }
 }

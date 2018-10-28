@@ -71,11 +71,15 @@
       update() {
         axios.put('/replies/' + this.data.id, {
           body: this.body,
-        });
+        })
+          .then(() => {
+            this.editing = false;
+            flash('Updated!');
+          })
+          .catch(error => {
+            flash(error.response.data, 'danger');
+          });
 
-        this.editing = false;
-
-        flash('Updated!');
       },
 
       destroy() {

@@ -1,7 +1,11 @@
 <template>
-    <div v-show="isShow" class="alert alert-success alert-flash" role="alert">
-        <h4 class="alert-heading">Success!</h4>
-        <p class="mb-0">{{ body }}</p>
+    <div
+            v-show="isShow"
+            class="alert alert-flash"
+            :class="'alert-' + type"
+            role="alert"
+            v-text="body"
+    >
     </div>
 </template>
 
@@ -19,6 +23,7 @@
       return {
         body: '',
         isShow: false,
+        type: 'success',
       };
     },
 
@@ -27,13 +32,14 @@
         this.show(this.message);
       }
 
-      window.events.$on('flash', message => this.show(message));
+      window.events.$on('flash', data => this.show(data));
     },
 
     methods: {
-      show(message) {
+      show(data) {
         this.isShow = true;
-        this.body = message;
+        this.body = data.message;
+        this.type = data.type;
 
         this.hide();
       },
