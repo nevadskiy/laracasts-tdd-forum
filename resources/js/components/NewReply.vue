@@ -43,7 +43,7 @@
             this.$emit('created', data);
           })
           .catch(error => {
-            flash(error.response.data.errors.body[0], 'danger');
+            flash(error.response.data, 'danger');
           })
       },
     }

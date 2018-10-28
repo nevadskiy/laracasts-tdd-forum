@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
+use Dotenv\Exception\ValidationException;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -47,6 +49,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($request->expectsJson() && $exception instanceof ValidationException) {
+            return response('Sorry, Validation failed', 422);
+        }
+
+        if ($exception instanceof ThrottleException) {
+            return response($exception->getMessage(), Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
         return parent::render($request, $exception);
     }
 }

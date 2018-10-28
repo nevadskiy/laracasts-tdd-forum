@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Reply;
 use App\User;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -17,5 +18,16 @@ class ReplyTest extends TestCase
         $reply = create(Reply::class);
 
         $this->assertInstanceOf(User::class, $reply->owner);
+    }
+
+    /** @test */
+    function it_knows_if_it_was_just_published()
+    {
+        $reply = create(Reply::class);
+
+        $this->assertTrue($reply->wasJustPublished());
+
+        $reply->created_at = Carbon::now()->subMinutes(10);
+        $this->assertFalse($reply->wasJustPublished());
     }
 }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Channel;
+use App\Http\Forms\CreatePostForm;
 use App\Reply;
 use App\Rules\SpamFree;
 use App\Thread;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -22,16 +22,9 @@ class RepliesController extends Controller
         return $thread->replies()->paginate(20);
     }
 
-    public function store(Request $request, Channel $channel, Thread $thread)
+    public function store(CreatePostForm $form, Channel $channel, Thread $thread)
     {
-        $this->validate($request, ['body' => ['required', new SpamFree()]]);
-
-        $reply = $thread->addReply([
-            'body' => $request['body'],
-            'user_id' => auth()->id()
-        ]);
-
-        return $reply->load('owner');
+        return $form->persist($thread)->load('owner');
     }
 
     public function destroy(Request $request, Reply $reply)

@@ -11,6 +11,19 @@ class ReplyPolicy
     use HandlesAuthorization;
 
     /**
+     * Determine whether the user can create the reply.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function create(User $user)
+    {
+        $lastReply = $user->fresh()->lastReply;
+
+        return is_null($lastReply) || !$lastReply->wasJustPublished();
+    }
+
+    /**
      * Determine whether the user can update the reply.
      *
      * @param  \App\User  $user

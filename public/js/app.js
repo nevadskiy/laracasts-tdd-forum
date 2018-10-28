@@ -64912,7 +64912,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this2.editing = false;
         flash('Updated!');
       }).catch(function (error) {
-        flash(error.response.data.errors.body[0], 'danger');
+        flash(error.response.data, 'danger');
       });
     },
     destroy: function destroy() {
@@ -65553,7 +65553,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         flash('Your reply has been posted.');
         _this.$emit('created', data);
       }).catch(function (error) {
-        flash(error.response.data.errors.body[0], 'danger');
+        flash(error.response.data, 'danger');
       });
     }
   }
