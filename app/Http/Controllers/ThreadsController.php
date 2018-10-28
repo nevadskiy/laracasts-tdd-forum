@@ -85,32 +85,11 @@ class ThreadsController extends Controller
     {
         $thread->append('isSubscribed');
 
-        $this->markAsRead($thread);
+        if (auth()->check()) {
+            auth()->user()->readThread($thread);
+        }
 
         return view('threads.show', compact('thread'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Thread $thread)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Thread  $thread
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Thread $thread)
-    {
-        //
     }
 
     /**
@@ -149,15 +128,5 @@ class ThreadsController extends Controller
         }
 
         return $threads->paginate(20);
-    }
-
-    /**
-     * @param Thread $thread
-     */
-    protected function markAsRead(Thread $thread): void
-    {
-        if (auth()->check()) {
-            auth()->user()->readThread($thread);
-        }
     }
 }
