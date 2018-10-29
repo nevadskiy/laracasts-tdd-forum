@@ -53,5 +53,13 @@ Route::group([
 
 Route::get('/profiles/{user}', 'ProfilesController@show')->name('profiles.show');
 
-Route::get('/profiles/{user}/notifications', 'UserNotificationsController@index')->name('notifications.index');
-Route::delete('/profiles/{user}/notifications/{notification}', 'UserNotificationsController@destroy')->name('notifications.destroy');
+Route::group([
+    'prefix' => '/profiles/{user}/notifications',
+    'as' => 'notifications.'
+], function () {
+    Route::get('/', 'UserNotificationsController@index')->name('index');
+    Route::delete('/{notification}', 'UserNotificationsController@destroy')->name('destroy');
+});
+
+Route::get('api/users', 'Api\UsersController@index');
+Route::post('api/users/{user}/avatar', 'Api\UserAvatarController@store')->middleware('auth')->name('avatar');

@@ -11,6 +11,16 @@
                             <small>Since {{ $user->created_at->diffForHumans() }}</small>
                         </h1>
                     </div>
+
+                    @can('update', $user)
+                        <form method="POST" action="{{ route('avatar', $user) }}" enctype="multipart/form-data" class="p-3">
+                            @csrf
+                            <input type="file" name="avatar">
+                            <button type="submit" class="btn btn-primary">Add avatar</button>
+                        </form>
+                    @endcan
+
+                    <img src="{{ $user->avatar() }}" width="200" height="200">
                 </div>
             </div>
             <div class="col-8">

@@ -14,7 +14,7 @@
             <div v-if="editing">
                 <form @submit.prevent="update">
                     <div class="form-group">
-                        <textarea class="form-control" v-model="body" required></textarea>
+                        <textarea id="body" class="form-control" v-model="body" required></textarea>
                     </div>
 
                     <button class="btn btn-sm btn-primary">Update</button>
@@ -34,6 +34,8 @@
 <script>
   import Favorite from './Favorite.vue';
   import moment from 'moment';
+  import 'jquery.caret';
+  import 'at.js';
 
   export default {
     components: {
@@ -67,6 +69,20 @@
       ago() {
         return moment.utc(this.data.created_at).fromNow();
       }
+    },
+
+    mounted() {
+      $('#body').atwho({
+        at: "@",
+        delay: 500,
+        callbacks: {
+          remoteFilter(query, callback) {
+            $.getJSON("/api/users", {name: query}, (usernames) => {
+              callback(usernames);
+            })
+          }
+        },
+      })
     },
 
     methods: {

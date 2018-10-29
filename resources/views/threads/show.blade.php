@@ -8,7 +8,10 @@
                     <div class="card mb-3">
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
-                                <h4 class="mb-0">{{ $thread->title }}</h4>
+                                <h4 class="mb-0">
+                                    <img src="{{ $thread->creator->avatar() }}" width="36" height="36" class="mr-1">
+                                    {{ $thread->title }}
+                                </h4>
 
                                 @can('delete', $thread)
                                     <form action="{{ $thread->path() }}" method="POST">
@@ -32,7 +35,7 @@
                         <div class="card-body">
                             <div>
                                 This thread was published {{ $thread->created_at->diffForHumans() }} by
-                                <a href="#">{{ $thread->creator->name }}</a>, and currently has @{{ repliesCount }} {{ str_plural('comment', $thread->replies->count()) }}
+                                <a href="/profiles/{{ $thread->creator->name }}">{{ $thread->creator->name }}</a>, and currently has @{{ repliesCount }} {{ str_plural('comment', $thread->replies->count()) }}
                             </div>
 
                             <subscribe :status="{{ var_export($thread->isSubscribed) }}"></subscribe>
