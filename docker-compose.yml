@@ -7,13 +7,13 @@ services:
       context: docker/nginx
       dockerfile: Dockerfile
     volumes:
-     - ./:/var/www
+    - ./:/var/www
     # Storing logs
-     - ./docker/nginx/logs:/var/log/nginx
+    - ./docker/nginx/logs:/var/log/nginx
     ports:
-     - 8080:80
+    - 8080:80
     links:
-     - php-fpm
+    - php-fpm
 
   ### PHP FastCGI Process Manager ###############
   php-fpm:
@@ -21,11 +21,11 @@ services:
       context: docker/php-fpm
       dockerfile: Dockerfile
     volumes:
-     - ./:/var/www
+    - ./:/var/www
     links:
-     - mysql
-     - redis
-     - mailhog
+    - mysql
+    - redis
+    - mailhog
 
   ### PHP-CLI ##################################
   php-cli:
@@ -48,14 +48,14 @@ services:
       context: docker/mysql
       dockerfile: Dockerfile
     volumes:
-     - mysql:/var/lib/mysql
+    - mysql:/var/lib/mysql
     environment:
-     - MYSQL_ROOT_PASSWORD=secret
-     - MYSQL_USER=app
-     - MYSQL_PASSWORD=app
-     - MYSQL_DATABASE=app
+    - MYSQL_ROOT_PASSWORD=secret
+    - MYSQL_USER=app
+    - MYSQL_PASSWORD=app
+    - MYSQL_DATABASE=app
     ports:
-     - 33061:3306
+    - 33061:3306
 
   ### MySQL for testing ########################
   mysql-testing:
@@ -74,9 +74,9 @@ services:
       context: docker/redis
       dockerfile: Dockerfile
     volumes:
-      - redis:/data
+    - redis:/data
     ports:
-      - 63791:6379
+    - 63791:6379
 
   ### Node ###############################
   node:
@@ -94,15 +94,17 @@ services:
       context: docker/supervisor
       dockerfile: Dockerfile
     volumes:
-     - ./:/var/www
+    - ./:/var/www
     # Supervisor logs
-     - ./docker/supervisor/logs:/home/logs
+    - ./docker/supervisor/logs:/home/logs
+    - ./docker/supervisor/logs:/var/log
     # Supervisor configurations
-     - ./docker/supervisor/conf.d:/etc/supervisor/conf.d
+    - ./docker/supervisor/conf.d:/etc/supervisor/conf.d
     links:
-     - mysql
-     - redis
-     - mailhog
+    - nginx
+    - mysql
+    - redis
+    - mailhog
 
   ### Mailhog (For mail testing) ####
   mailhog:
@@ -110,10 +112,10 @@ services:
       context: docker/mailhog
       dockerfile: Dockerfile
     ports:
-     # SMTP server
-     - 1026:1025
-     # Inbox web page
-     - 8026:8025
+    # SMTP server
+    - 1026:1025
+    # Inbox web page
+    - 8026:8025
 
 volumes:
   mysql:
