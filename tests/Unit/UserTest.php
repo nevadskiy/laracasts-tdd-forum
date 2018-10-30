@@ -25,10 +25,10 @@ class UserTest extends TestCase
     {
         $user = create(User::class, ['avatar_path' => null]);
 
-        $this->assertEquals(asset('images/user-default.jpg'), $user->avatar());
+        $this->assertEquals(asset('images/user-default.jpg'), $user->avatar_path);
 
         $user->avatar_path = 'avatars/me.jpg';
 
-        $this->assertEquals(asset('storage/avatars/me.jpg'), $user->avatar());
+        $this->assertEquals(asset('storage/avatars/me.jpg'), $user->avatar_path);
     }
 }

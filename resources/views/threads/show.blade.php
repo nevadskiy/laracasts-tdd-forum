@@ -9,7 +9,7 @@
                         <div class="card-header">
                             <div class="d-flex align-items-center justify-content-between">
                                 <h4 class="mb-0">
-                                    <img src="{{ $thread->creator->avatar() }}" width="36" height="36" class="mr-1">
+                                    <img src="{{ $thread->creator->avatar_path }}" width="36" height="36" class="mr-1">
                                     {{ $thread->title }}
                                 </h4>
 
