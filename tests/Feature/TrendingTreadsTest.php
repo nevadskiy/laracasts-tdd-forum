@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Thread;
 use App\Trending;
-use Illuminate\Support\Facades\Redis;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -18,7 +17,7 @@ class TrendingTreadsTest extends TestCase
     {
         parent::setUp();
 
-        $this->trending = new Trending();
+        $this->trending = resolve(Trending::class);
 
         $this->trending->reset();
     }

@@ -15,6 +15,7 @@ class Thread extends Model
     public $fillable = [
         'user_id',
         'channel_id',
+        'visits',
         'title',
         'body',
     ];
@@ -97,6 +98,10 @@ class Thread extends Model
         return $filters->apply($query);
     }
 
+    /**
+     * @param User|null $user
+     * @return $this
+     */
     public function subscribe(User $user = null)
     {
         $this->subscriptions()->create([
@@ -106,6 +111,9 @@ class Thread extends Model
         return $this;
     }
 
+    /**
+     * @param User|null $user
+     */
     public function unsubscribe(User $user = null)
     {
         $this->subscriptions()
@@ -113,16 +121,27 @@ class Thread extends Model
             ->delete();
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function subscriptions()
     {
         return $this->hasMany(ThreadSubscription::class);
     }
 
+    /**
+     * @return bool
+     */
     public function getIsSubscribedAttribute()
     {
         return $this->subscriptions()->where('user_id', auth()->id())->exists();
     }
 
+    /**
+     * @param $user
+     * @return bool
+     * @throws \Exception
+     */
     public function hasUpdatesFor($user)
     {
         $key = $user->visitedThreadCacheKey($this);

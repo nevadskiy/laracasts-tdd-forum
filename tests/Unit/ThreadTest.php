@@ -8,6 +8,7 @@ use App\Thread;
 use App\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Notification;
+use Redis;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -127,6 +128,5 @@ class ThreadTest extends TestCase
         $user->readThread($this->thread);
 
         $this->assertFalse($this->thread->hasUpdatesFor($user));
-
     }
 }
