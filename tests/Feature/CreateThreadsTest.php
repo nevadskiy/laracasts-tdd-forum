@@ -52,7 +52,7 @@ class CreateThreadsTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $this->publishThread()->assertRedirect('/email/verify');
+        $this->publishThread()->assertRedirect()->assertSessionHas('flash');
     }
 
     /** @test */

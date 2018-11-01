@@ -23,14 +23,8 @@ Route::group([
     'prefix' => 'threads',
     'as' => 'threads.',
 ], function () {
-
-    Route::group([
-        'middleware' => 'verified',
-    ], function () {
-        Route::post('/', 'ThreadsController@store')->name('store');
-        Route::get('create', 'ThreadsController@create')->name('create');
-    });
-
+    Route::post('/', 'ThreadsController@store')->name('store')->middleware('verified');
+    Route::get('create', 'ThreadsController@create')->name('create');
     Route::get('{channel}/{thread}', 'ThreadsController@show')->name('show');
     Route::delete('{channel}/{thread}', 'ThreadsController@destroy')->name('destroy');
     Route::get('{channel?}', 'ThreadsController@index')->name('index');
