@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('home', 'HomeController@index')->name('home');
 
@@ -23,8 +23,14 @@ Route::group([
     'prefix' => 'threads',
     'as' => 'threads.',
 ], function () {
-    Route::post('/', 'ThreadsController@store')->name('store');
-    Route::get('create', 'ThreadsController@create')->name('create');
+
+    Route::group([
+        'middleware' => 'verified',
+    ], function () {
+        Route::post('/', 'ThreadsController@store')->name('store');
+        Route::get('create', 'ThreadsController@create')->name('create');
+    });
+
     Route::get('{channel}/{thread}', 'ThreadsController@show')->name('show');
     Route::delete('{channel}/{thread}', 'ThreadsController@destroy')->name('destroy');
     Route::get('{channel?}', 'ThreadsController@index')->name('index');
@@ -63,3 +69,6 @@ Route::group([
 
 Route::get('api/users', 'Api\UsersController@index');
 Route::post('api/users/{user}/avatar', 'Api\UserAvatarController@store')->middleware('auth')->name('avatar');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

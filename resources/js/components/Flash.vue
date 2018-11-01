@@ -21,15 +21,15 @@
 
     data() {
       return {
-        body: '',
-        isShow: false,
+        body: this.message,
         type: 'success',
+        isShow: false,
       };
     },
 
     created() {
       if (this.message) {
-        this.show(this.message);
+        this.show();
       }
 
       window.events.$on('flash', data => this.show(data));
@@ -37,9 +37,12 @@
 
     methods: {
       show(data) {
+        if (data) {
+          this.body = data.message;
+          this.type = data.type;
+        }
+
         this.isShow = true;
-        this.body = data.message;
-        this.type = data.type;
 
         this.hide();
       },

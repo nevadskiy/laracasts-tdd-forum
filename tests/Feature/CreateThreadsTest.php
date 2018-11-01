@@ -48,6 +48,14 @@ class CreateThreadsTest extends TestCase
     }
 
     /** @test */
+    function authenticated_users_must_first_confirm_their_email_address_before_creating_threads()
+    {
+        $this->withoutExceptionHandling();
+
+        $this->publishThread()->assertRedirect('/email/verify');
+    }
+
+    /** @test */
     function a_thread_requires_a_title()
     {
         $this->publishThread(['title' => null])
@@ -109,7 +117,7 @@ class CreateThreadsTest extends TestCase
         $this->assertDatabaseHas('threads', ['id' => $thread->id]);
     }
 
-    public function publishThread(array $overrides = [])
+    protected function publishThread(array $overrides = [])
     {
         $this->signIn();
 
