@@ -12,14 +12,22 @@ class Thread extends Model
     /**
      * @var array
      */
-    public $fillable = [
+    protected $fillable = [
         'user_id',
         'channel_id',
         'visits',
         'title',
         'body',
         'slug',
-        'best_reply_id'
+        'best_reply_id',
+        'locked'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'locked' => 'boolean'
     ];
 
     /**

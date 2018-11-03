@@ -9,16 +9,25 @@
     },
 
     props: {
-      initRepliesCount: {
-        type: Number,
-        default: 0,
+      thread: {
+        type: Object,
+        required: true,
       }
     },
 
     data() {
       return {
-        repliesCount: this.initRepliesCount,
+        repliesCount: this.thread.replies_count,
+        locked: this.thread.locked,
       };
+    },
+
+    methods: {
+      toggleLock() {
+        axios[this.locked ? 'delete' : 'post'](`/threads/${this.thread.slug}/lock`);
+
+        this.locked = ! this.locked;
+      },
     }
   };
 </script>

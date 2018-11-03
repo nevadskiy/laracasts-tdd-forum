@@ -23,6 +23,15 @@ Route::group([
     'prefix' => 'threads',
     'as' => 'threads.',
 ], function () {
+    Route::group([
+        'prefix' => '{thread}/lock',
+        'as' => 'locked.',
+        'middleware' => 'administrator',
+    ], function () {
+        Route::post('/', 'LockedThreadsController@store')->name('store');
+        Route::delete('/', 'LockedThreadsController@destroy')->name('destroy');
+    });
+
     Route::post('/', 'ThreadsController@store')->name('store')->middleware(['auth', 'verified']);
     Route::get('create', 'ThreadsController@create')->name('create');
     Route::get('{channel}/{thread}', 'ThreadsController@show')->name('show');

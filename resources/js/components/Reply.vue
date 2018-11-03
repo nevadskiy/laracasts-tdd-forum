@@ -24,7 +24,7 @@
             <div v-else v-html="body"></div>
         </div>
 
-        <div class="card-footer d-flex">
+        <div v-if="authorize('owns', reply) || authorize('owns', reply.thread)" class="card-footer d-flex">
             <template v-if="authorize('owns', reply)">
                 <button class="btn btn-sm btn-primary mr-2" @click="editing = true">Edit</button>
                 <button class="btn btn-sm btn-danger mr-2" @click="destroy">Delete</button>

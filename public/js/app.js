@@ -64907,16 +64907,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   props: {
-    initRepliesCount: {
-      type: Number,
-      default: 0
+    thread: {
+      type: Object,
+      required: true
     }
   },
 
   data: function data() {
     return {
-      repliesCount: this.initRepliesCount
+      repliesCount: this.thread.replies_count,
+      locked: this.thread.locked
     };
+  },
+
+
+  methods: {
+    toggleLock: function toggleLock() {
+      axios[this.locked ? 'delete' : 'post']('/threads/' + this.thread.slug + '/lock');
+
+      this.locked = !this.locked;
+    }
   }
 });
 
@@ -67400,57 +67410,60 @@ var render = function() {
           : _c("div", { domProps: { innerHTML: _vm._s(_vm.body) } })
       ]),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "card-footer d-flex" },
-        [
-          _vm.authorize("owns", _vm.reply)
-            ? [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-sm btn-primary mr-2",
-                    on: {
-                      click: function($event) {
-                        _vm.editing = true
-                      }
-                    }
-                  },
-                  [_vm._v("Edit")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-sm btn-danger mr-2",
-                    on: { click: _vm.destroy }
-                  },
-                  [_vm._v("Delete")]
-                )
-              ]
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.authorize("owns", _vm.reply.thread)
-            ? _c(
-                "button",
-                {
-                  directives: [
+      _vm.authorize("owns", _vm.reply) ||
+      _vm.authorize("owns", _vm.reply.thread)
+        ? _c(
+            "div",
+            { staticClass: "card-footer d-flex" },
+            [
+              _vm.authorize("owns", _vm.reply)
+                ? [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-primary mr-2",
+                        on: {
+                          click: function($event) {
+                            _vm.editing = true
+                          }
+                        }
+                      },
+                      [_vm._v("Edit")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-sm btn-danger mr-2",
+                        on: { click: _vm.destroy }
+                      },
+                      [_vm._v("Delete")]
+                    )
+                  ]
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.authorize("owns", _vm.reply.thread)
+                ? _c(
+                    "button",
                     {
-                      name: "show",
-                      rawName: "v-show",
-                      value: !_vm.isBest,
-                      expression: "!isBest"
-                    }
-                  ],
-                  staticClass: "btn btn-sm btn-default ml-auto",
-                  on: { click: _vm.markBest }
-                },
-                [_vm._v("Best reply\n        ")]
-              )
-            : _vm._e()
-        ],
-        2
-      )
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: !_vm.isBest,
+                          expression: "!isBest"
+                        }
+                      ],
+                      staticClass: "btn btn-sm btn-default ml-auto",
+                      on: { click: _vm.markBest }
+                    },
+                    [_vm._v("Best reply\n        ")]
+                  )
+                : _vm._e()
+            ],
+            2
+          )
+        : _vm._e()
     ]
   )
 }
@@ -67695,7 +67708,11 @@ var render = function() {
         on: { changed: _vm.fetch }
       }),
       _vm._v(" "),
-      _c("new-reply", { on: { created: _vm.add } })
+      _vm.$parent.locked
+        ? _c("p", { staticClass: "text-center" }, [
+            _vm._v("This thread has been locked. No more replies are allowed.")
+          ])
+        : _c("new-reply", { on: { created: _vm.add } })
     ],
     2
   )
@@ -67902,6 +67919,9 @@ var authorization = {
     var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'user_id';
 
     return item[prop] === user.id;
+  },
+  admin: function admin() {
+    return ['admin'].includes(user.name);
   }
 };
 

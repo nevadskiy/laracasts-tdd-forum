@@ -38,6 +38,10 @@ class RepliesController extends Controller
      */
     public function store(CreatePostForm $form, Channel $channel, Thread $thread)
     {
+        if ($thread->locked) {
+            return response('Thread is locked', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         return $form->persist($thread)->load('owner');
     }
 
