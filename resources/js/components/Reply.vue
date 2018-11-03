@@ -1,6 +1,6 @@
 <template>
-    <div :id="'reply-' + id" class="card mb-3">
-        <div class="card-header">
+    <div :id="'reply-' + id" class="card mb-3" :class="isBest ? 'card-best' : ''">
+        <div class="card-header text-white">
             <div class="d-flex align-items-center justify-content-between">
                 <span>
                     <a :href="'/profiles/' + data.owner.name">{{ data.owner.name }}</a>
@@ -24,9 +24,12 @@
             <div v-else v-html="body"></div>
         </div>
 
-        <div v-if="canUpdate" class="card-footer d-flex">
-            <button class="btn btn-sm btn-primary mr-2" @click="editing = true">Edit</button>
-            <button class="btn btn-sm btn-danger mr-2" @click="destroy">Delete</button>
+        <div class="card-footer d-flex">
+            <template v-if="canUpdate">
+                <button class="btn btn-sm btn-primary mr-2" @click="editing = true">Edit</button>
+                <button class="btn btn-sm btn-danger mr-2" @click="destroy">Delete</button>
+            </template>
+            <button v-show="!isBest" class="btn btn-sm btn-default ml-auto" @click="markBest">Best reply</button>
         </div>
     </div>
 </template>
@@ -54,6 +57,7 @@
         editing: false,
         body: this.data.body,
         id: this.data.id,
+        isBest: false,
       };
     },
 
@@ -106,7 +110,19 @@
         flash('Your reply has been deleted');
 
         this.$emit('deleted', this.data.id);
+      },
+
+      markBest() {
+        axios.post('/replies/' + this.data.id + '/best');
+        this.isBest = true;
       }
     }
   };
 </script>
+
+<style>
+    .card-best {
+        background-color: #5aa97a7d;
+        color: white;
+    }
+</style>

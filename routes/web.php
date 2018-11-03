@@ -49,6 +49,9 @@ Route::group([
 
     Route::post('replies/{reply}/favorites', 'FavoritesController@store')->name('favorite');
     Route::delete('replies/{reply}/favorites', 'FavoritesController@destroy')->name('unfavorite');
+
+    Route::post('replies/{reply}/best', 'BestReplyController@store')->name('best');
+    Route::delete('replies/{reply}/best', 'BestReplyController@destroy')->name('best');
 });
 
 Route::get('/profiles/{user}', 'ProfilesController@show')->name('profiles.show');

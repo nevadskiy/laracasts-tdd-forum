@@ -19,6 +19,7 @@ class Thread extends Model
         'title',
         'body',
         'slug',
+        'best_reply_id'
     ];
 
     /**
@@ -185,5 +186,10 @@ class Thread extends Model
         }
 
         return "{$slug}-2";
+    }
+
+    public function markAsBestReply(Reply $reply)
+    {
+        $this->update(['best_reply_id' => $reply->id]);
     }
 }
