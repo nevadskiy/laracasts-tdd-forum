@@ -25,7 +25,7 @@
         </div>
 
         <div class="card-footer d-flex">
-            <template v-if="canUpdate">
+            <template v-if="authorize('updateReply', reply)">
                 <button class="btn btn-sm btn-primary mr-2" @click="editing = true">Edit</button>
                 <button class="btn btn-sm btn-danger mr-2" @click="destroy">Delete</button>
             </template>
@@ -57,19 +57,12 @@
         editing: false,
         body: this.data.body,
         id: this.data.id,
-        isBest: false,
+        isBest: this.data.isBest,
+        reply: this.data,
       };
     },
 
     computed: {
-      signedIn() {
-        return window.app.signedIn;
-      },
-
-      canUpdate() {
-        return this.authorize(user => this.data.user_id === user.id);
-      },
-
       ago() {
         return moment.utc(this.data.created_at).fromNow();
       }
@@ -87,6 +80,12 @@
           }
         },
       })
+    },
+
+    created() {
+        window.events.$on('best-reply-selected', (id) => {
+          this.isBest = (id === this.id);
+        })
     },
 
     methods: {
@@ -114,7 +113,8 @@
 
       markBest() {
         axios.post('/replies/' + this.data.id + '/best');
-        this.isBest = true;
+
+        window.events.$emit('best-reply-selected', this.data.id);
       }
     }
   };

@@ -28,12 +28,6 @@
       }
     },
 
-    computed: {
-      signedIn() {
-        return window.app.signedIn;
-      }
-    },
-
     methods: {
       publish() {
         axios.post(this.endpoint, {body: this.body})

@@ -30391,13 +30391,23 @@ __webpack_require__(139);
 
 window.Vue = __webpack_require__(161);
 
-window.Vue.prototype.authorize = function (handler) {
-  // Additional admin privileges.
+var authorizations = __webpack_require__(212);
 
-  var user = window.app.user;
+Vue.prototype.authorize = function () {
+  if (!window.app.signedIn) return false;
 
-  return user ? handler(window.app.user) : false;
+  for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
+    params[_key] = arguments[_key];
+  }
+
+  if (typeof params[0] === 'string') {
+    return authorizations[params[0]](params[1]);
+  }
+
+  return params[0](window.app.user);
 };
+
+Vue.prototype.signedIn = window.app.signedIn;
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -65157,22 +65167,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       editing: false,
       body: this.data.body,
       id: this.data.id,
-      isBest: false
+      isBest: this.data.isBest,
+      reply: this.data
     };
   },
 
 
   computed: {
-    signedIn: function signedIn() {
-      return window.app.signedIn;
-    },
-    canUpdate: function canUpdate() {
-      var _this = this;
-
-      return this.authorize(function (user) {
-        return _this.data.user_id === user.id;
-      });
-    },
     ago: function ago() {
       return __WEBPACK_IMPORTED_MODULE_1_moment___default.a.utc(this.data.created_at).fromNow();
     }
@@ -65189,6 +65190,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           });
         }
       }
+    });
+  },
+  created: function created() {
+    var _this = this;
+
+    window.events.$on('best-reply-selected', function (id) {
+      _this.isBest = id === _this.id;
     });
   },
 
@@ -65215,7 +65223,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     markBest: function markBest() {
       axios.post('/replies/' + this.data.id + '/best');
-      this.isBest = true;
+
+      window.events.$emit('best-reply-selected', this.data.id);
     }
   }
 });
@@ -67392,7 +67401,7 @@ var render = function() {
         "div",
         { staticClass: "card-footer d-flex" },
         [
-          _vm.canUpdate
+          _vm.authorize("updateReply", _vm.reply)
             ? [
                 _c(
                   "button",
@@ -67533,12 +67542,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
 
-
-  computed: {
-    signedIn: function signedIn() {
-      return window.app.signedIn;
-    }
-  },
 
   methods: {
     publish: function publish() {
@@ -67880,6 +67883,20 @@ exports.push([module.i, "\n.card-best {\n    background-color: #5aa97a7d;\n    c
 
 // exports
 
+
+/***/ }),
+/* 212 */
+/***/ (function(module, exports) {
+
+var user = window.app.user;
+
+var authorization = {
+  updateReply: function updateReply(reply) {
+    return reply.user_id === user.id;
+  }
+};
+
+module.exports = authorization;
 
 /***/ })
 /******/ ]);
