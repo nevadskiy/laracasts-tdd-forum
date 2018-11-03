@@ -18,6 +18,7 @@ class Thread extends Model
         'visits',
         'title',
         'body',
+        'slug',
     ];
 
     /**
@@ -40,6 +41,16 @@ class Thread extends Model
             // Trick with collection EACH method
             $thread->replies->each->delete();
         });
+
+        static::created(function (Thread $thread) {
+            // Thread->update() will hit mutator
+            $thread->update(['slug' => $thread->title]);
+        });
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 
     /**
@@ -47,7 +58,7 @@ class Thread extends Model
      */
     public function path()
     {
-        return "/threads/{$this->channel->slug}/{$this->id}";
+        return "/threads/{$this->channel->slug}/{$this->slug}";
     }
 
     /**
@@ -147,5 +158,32 @@ class Thread extends Model
         $key = $user->visitedThreadCacheKey($this);
 
         return $this->updated_at > cache($key);
+    }
+
+    public function setSlugAttribute($value)
+    {
+        $slug = str_slug($value);
+
+        if (static::whereSlug($slug)->exists()) {
+            $slug = "{$slug}-" . $this->id;
+        }
+
+        $this->attributes['slug'] = $slug;
+    }
+
+    public function incrementSlug($slug)
+    {
+        // Get latest by ID value with given title and get its slug
+        $max = static::whereTitle($this->title)->latest('id')->value('slug');
+
+        // Get last character and check if it is numeric
+        if (is_numeric($max[-1])) {
+            // Replace it with incremented number
+            return preg_replace_callback('/(\d+)$/', function ($matches) {
+                return $matches[1] + 1;
+            }, $max);
+        }
+
+        return "{$slug}-2";
     }
 }

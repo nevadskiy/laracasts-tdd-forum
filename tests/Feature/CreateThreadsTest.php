@@ -82,6 +82,34 @@ class CreateThreadsTest extends TestCase
     }
 
     /** @test */
+    function it_required_a_unique_slug()
+    {
+        $this->signIn();
+
+        $this->withoutExceptionHandling();
+
+        create(Thread::class, [], 2);
+
+        $thread = create(Thread::class, ['title' => 'Foo Title']);
+        $this->assertSame($thread->fresh()->slug, 'foo-title');
+
+        $thread = $this->postJson(route('threads.store'), $thread->toArray())->json();
+
+        $this->assertSame("foo-title-{$thread['id']}", $thread['slug']);
+    }
+
+    public function a_thread_with_a_title_that_ends_in_a_number_should_generate_the_proper_slug()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class, ['title' => 'Some Title 24']);
+
+        $this->post(route('threads.store'), $thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug('some-title-24-2')->exists());
+    }
+
+    /** @test */
     function authorized_users_can_delete_threads()
     {
         $this->signIn();
