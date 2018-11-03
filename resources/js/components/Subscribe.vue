@@ -1,5 +1,5 @@
 <template>
-    <button type="submit" @click="toggle" :class="buttonClasses">Subscribe</button>
+    <button v-if="signedIn" type="submit" @click="toggle" :class="buttonClasses">Subscribe</button>
 </template>
 
 <script>

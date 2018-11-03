@@ -3,11 +3,11 @@
         <div class="card-header text-white">
             <div class="d-flex align-items-center justify-content-between">
                 <span>
-                    <a :href="'/profiles/' + data.owner.name">{{ data.owner.name }}</a>
+                    <a :href="'/profiles/' + reply.owner.name">{{ reply.owner.name }}</a>
                     <span class="">said {{ ago }}</span>
                 </span>
 
-                <favorite v-if="signedIn" :reply="data"></favorite>
+                <favorite v-if="signedIn" :reply="reply"></favorite>
             </div>
         </div>
         <div class="card-body">
@@ -25,11 +25,13 @@
         </div>
 
         <div class="card-footer d-flex">
-            <template v-if="authorize('updateReply', reply)">
+            <template v-if="authorize('owns', reply)">
                 <button class="btn btn-sm btn-primary mr-2" @click="editing = true">Edit</button>
                 <button class="btn btn-sm btn-danger mr-2" @click="destroy">Delete</button>
             </template>
-            <button v-show="!isBest" class="btn btn-sm btn-default ml-auto" @click="markBest">Best reply</button>
+            <button v-if="authorize('owns', reply.thread)" v-show="!isBest" class="btn btn-sm btn-default ml-auto"
+                    @click="markBest">Best reply
+            </button>
         </div>
     </div>
 </template>
@@ -46,7 +48,7 @@
     },
 
     props: {
-      data: {
+      reply: {
         type: Object,
         required: true,
       }
@@ -55,16 +57,15 @@
     data() {
       return {
         editing: false,
-        body: this.data.body,
-        id: this.data.id,
-        isBest: this.data.isBest,
-        reply: this.data,
+        body: this.reply.body,
+        id: this.reply.id,
+        isBest: this.reply.isBest,
       };
     },
 
     computed: {
       ago() {
-        return moment.utc(this.data.created_at).fromNow();
+        return moment.utc(this.reply.created_at).fromNow();
       }
     },
 
@@ -83,14 +84,14 @@
     },
 
     created() {
-        window.events.$on('best-reply-selected', (id) => {
-          this.isBest = (id === this.id);
-        })
+      window.events.$on('best-reply-selected', (id) => {
+        this.isBest = (id === this.id);
+      })
     },
 
     methods: {
       update() {
-        axios.put('/replies/' + this.data.id, {
+        axios.put('/replies/' + this.reply.id, {
           body: this.body,
         })
           .then(() => {
@@ -104,17 +105,17 @@
       },
 
       destroy() {
-        axios.delete('/replies/' + this.data.id);
+        axios.delete('/replies/' + this.reply.id);
 
         flash('Your reply has been deleted');
 
-        this.$emit('deleted', this.data.id);
+        this.$emit('deleted', this.reply.id);
       },
 
       markBest() {
-        axios.post('/replies/' + this.data.id + '/best');
+        axios.post('/replies/' + this.reply.id + '/best');
 
-        window.events.$emit('best-reply-selected', this.data.id);
+        window.events.$emit('best-reply-selected', this.reply.id);
       }
     }
   };

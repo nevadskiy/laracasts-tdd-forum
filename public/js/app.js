@@ -65144,6 +65144,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -65156,7 +65158,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   props: {
-    data: {
+    reply: {
       type: Object,
       required: true
     }
@@ -65165,17 +65167,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       editing: false,
-      body: this.data.body,
-      id: this.data.id,
-      isBest: this.data.isBest,
-      reply: this.data
+      body: this.reply.body,
+      id: this.reply.id,
+      isBest: this.reply.isBest
     };
   },
 
 
   computed: {
     ago: function ago() {
-      return __WEBPACK_IMPORTED_MODULE_1_moment___default.a.utc(this.data.created_at).fromNow();
+      return __WEBPACK_IMPORTED_MODULE_1_moment___default.a.utc(this.reply.created_at).fromNow();
     }
   },
 
@@ -65205,7 +65206,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     update: function update() {
       var _this2 = this;
 
-      axios.put('/replies/' + this.data.id, {
+      axios.put('/replies/' + this.reply.id, {
         body: this.body
       }).then(function () {
         _this2.editing = false;
@@ -65215,16 +65216,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     destroy: function destroy() {
-      axios.delete('/replies/' + this.data.id);
+      axios.delete('/replies/' + this.reply.id);
 
       flash('Your reply has been deleted');
 
-      this.$emit('deleted', this.data.id);
+      this.$emit('deleted', this.reply.id);
     },
     markBest: function markBest() {
-      axios.post('/replies/' + this.data.id + '/best');
+      axios.post('/replies/' + this.reply.id + '/best');
 
-      window.events.$emit('best-reply-selected', this.data.id);
+      window.events.$emit('best-reply-selected', this.reply.id);
     }
   }
 });
@@ -67321,15 +67322,17 @@ var render = function() {
           { staticClass: "d-flex align-items-center justify-content-between" },
           [
             _c("span", [
-              _c("a", { attrs: { href: "/profiles/" + _vm.data.owner.name } }, [
-                _vm._v(_vm._s(_vm.data.owner.name))
-              ]),
+              _c(
+                "a",
+                { attrs: { href: "/profiles/" + _vm.reply.owner.name } },
+                [_vm._v(_vm._s(_vm.reply.owner.name))]
+              ),
               _vm._v(" "),
               _c("span", {}, [_vm._v("said " + _vm._s(_vm.ago))])
             ]),
             _vm._v(" "),
             _vm.signedIn
-              ? _c("favorite", { attrs: { reply: _vm.data } })
+              ? _c("favorite", { attrs: { reply: _vm.reply } })
               : _vm._e()
           ],
           1
@@ -67401,7 +67404,7 @@ var render = function() {
         "div",
         { staticClass: "card-footer d-flex" },
         [
-          _vm.authorize("updateReply", _vm.reply)
+          _vm.authorize("owns", _vm.reply)
             ? [
                 _c(
                   "button",
@@ -67427,22 +67430,24 @@ var render = function() {
               ]
             : _vm._e(),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              directives: [
+          _vm.authorize("owns", _vm.reply.thread)
+            ? _c(
+                "button",
                 {
-                  name: "show",
-                  rawName: "v-show",
-                  value: !_vm.isBest,
-                  expression: "!isBest"
-                }
-              ],
-              staticClass: "btn btn-sm btn-default ml-auto",
-              on: { click: _vm.markBest }
-            },
-            [_vm._v("Best reply")]
-          )
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.isBest,
+                      expression: "!isBest"
+                    }
+                  ],
+                  staticClass: "btn btn-sm btn-default ml-auto",
+                  on: { click: _vm.markBest }
+                },
+                [_vm._v("Best reply\n        ")]
+              )
+            : _vm._e()
         ],
         2
       )
@@ -67673,7 +67678,7 @@ var render = function() {
           { key: reply.id },
           [
             _c("reply", {
-              attrs: { data: reply },
+              attrs: { reply: reply },
               on: {
                 deleted: function($event) {
                   _vm.remove(index)
@@ -67814,15 +67819,17 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "button",
-    {
-      class: _vm.buttonClasses,
-      attrs: { type: "submit" },
-      on: { click: _vm.toggle }
-    },
-    [_vm._v("Subscribe")]
-  )
+  return _vm.signedIn
+    ? _c(
+        "button",
+        {
+          class: _vm.buttonClasses,
+          attrs: { type: "submit" },
+          on: { click: _vm.toggle }
+        },
+        [_vm._v("Subscribe")]
+      )
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -67891,8 +67898,10 @@ exports.push([module.i, "\n.card-best {\n    background-color: #5aa97a7d;\n    c
 var user = window.app.user;
 
 var authorization = {
-  updateReply: function updateReply(reply) {
-    return reply.user_id === user.id;
+  owns: function owns(item) {
+    var prop = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'user_id';
+
+    return item[prop] === user.id;
   }
 };
 

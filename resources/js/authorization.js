@@ -1,8 +1,8 @@
 let user = window.app.user;
 
 let authorization = {
-  updateReply(reply) {
-    return reply.user_id === user.id;
+  owns(item, prop = 'user_id') {
+    return item[prop] === user.id;
   }
 };
 
