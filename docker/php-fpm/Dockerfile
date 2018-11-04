@@ -18,6 +18,9 @@ RUN apt-get install -y libcurl3-dev curl && docker-php-ext-install curl
 # MySQL
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Redis
+RUN pecl install redis && docker-php-ext-enable redis
+
 # Custom config
 Add ./custom.ini /usr/local/etc/php/conf.d/custom.ini
 

@@ -27,6 +27,9 @@ RUN docker-php-ext-install gd
 # MySQL
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Redis
+RUN pecl install redis && docker-php-ext-enable redis
+
 #--------------------------------------------------------------------------
 # Composer installation
 #--------------------------------------------------------------------------

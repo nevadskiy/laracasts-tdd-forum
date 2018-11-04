@@ -29,6 +29,9 @@ RUN chmod -R 644 /etc/cron.d
 RUN touch /var/log/cron.log
 RUN crontab /etc/cron.d/schedule
 
+# Redis
+RUN pecl install redis && docker-php-ext-enable redis
+
 #--------------------------------------------------------------------------
 # Clean up
 #--------------------------------------------------------------------------

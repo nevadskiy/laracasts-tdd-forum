@@ -13,4 +13,5 @@ ALIASES:
 ```
 alias tf='docker-compose exec php-cli vendor/bin/phpunit --filter'
 alias art='docker-compose exec php-cli php artisan'
+alias dphp='docker-compose exec php-cli'
 ```

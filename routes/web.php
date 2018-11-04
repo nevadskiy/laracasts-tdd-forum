@@ -34,6 +34,7 @@ Route::group([
 
     Route::post('/', 'ThreadsController@store')->name('store')->middleware(['auth', 'verified']);
     Route::get('create', 'ThreadsController@create')->name('create');
+    Route::get('search', 'SearchController@index')->name('index');
     Route::get('{channel}/{thread}', 'ThreadsController@show')->name('show');
     Route::put('{channel}/{thread}', 'ThreadsController@update')->name('update')->middleware('auth');
     Route::delete('{channel}/{thread}', 'ThreadsController@destroy')->name('destroy');
