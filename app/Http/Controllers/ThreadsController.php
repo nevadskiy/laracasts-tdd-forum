@@ -62,7 +62,7 @@ class ThreadsController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'title' => 'required',
+            'title' => ['required', new SpamFree()],
             'body' => ['required', new SpamFree()],
             'channel_id' => 'required|numeric|exists:channels,id',
         ]);
@@ -102,6 +102,23 @@ class ThreadsController extends Controller
         $thread->increment('visits');
 
         return view('threads.show', compact('thread'));
+    }
+
+    /**
+     * @param Request $request
+     * @param Channel $channel
+     * @param Thread $thread
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function update(Request $request, Channel $channel, Thread $thread)
+    {
+        $this->authorize('update', $thread);
+
+        $thread->update($this->validate($request, [
+            'title' => ['required', new SpamFree()],
+            'body' => ['required', new SpamFree()],
+        ]));
     }
 
     /**
